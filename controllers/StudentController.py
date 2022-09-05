@@ -1,4 +1,3 @@
-import json
 from fastapi import APIRouter
 from fastapi.responses import JSONResponse
 from typing import List

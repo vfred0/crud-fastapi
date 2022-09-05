@@ -16,8 +16,7 @@ class StudentRepository:
         student.id = int(self.__students[-1]["id"]) + 1
         student.name = f"Estudiante #{student.id}"
         self.__students.append(jsonable_encoder(student))
-        with open(self.__URL_DB, "w") as f:
-            json.dump(self.__students, f)
+        self.__update_students()
 
     def get_students(self) -> List[Student]:
         return self.__students
@@ -31,8 +30,7 @@ class StudentRepository:
 
         self.__students[self.__students.index(updateStudent)] = student
 
-        with open(self.__URL_DB, "w") as f:
-            json.dump(self.__students, f)
+        self.__update_students()
 
     def delete(self, id):
         deleteStudent: Student = list(
@@ -40,6 +38,8 @@ class StudentRepository:
         )[0]
 
         self.__students.remove(deleteStudent)
+        self.__update_students()        
 
+    def __update_students(self):
         with open(self.__URL_DB, "w") as f:
             json.dump(self.__students, f)
