@@ -15,7 +15,7 @@ class StudentController:
 
     @router.get("/", response_model=List[Student])
     def get_students():
-        return StudentRepository().get_users()
+        return StudentRepository().get_students()
 
     @router.post("/save")
     def save(student: Student):
@@ -25,9 +25,13 @@ class StudentController:
     @router.delete("/delete/{id}")
     def delete(id: int):
         StudentRepository().delete(id)
-        return JSONResponse(status_code=200, content={"message": "Estudiante eliminado"})
+        return JSONResponse(
+            status_code=200, content={"message": "Estudiante eliminado"}
+        )
 
     @router.put("/update", response_model=str)
     def update(student: Student):
         StudentRepository().update(student)
-        return JSONResponse(status_code=200, content={"message": "Estudiante actualizado"})
+        return JSONResponse(
+            status_code=200, content={"message": "Estudiante actualizado"}
+        )

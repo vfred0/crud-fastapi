@@ -19,7 +19,7 @@ class StudentRepository:
         with open(self.__URL_DB, "w") as f:
             json.dump(self.__students, f)
 
-    def get_users(self) -> List[Student]:
+    def get_students(self) -> List[Student]:
         return self.__students
 
     def update(self, student):
