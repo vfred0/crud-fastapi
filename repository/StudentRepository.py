@@ -12,7 +12,7 @@ class StudentRepository:
             self.__students: List[Student] = json.load(f)
 
     def save(self, student):
-        print(self.__students[-1])
+        print(f"DEBUG: {self.__students[-1]}")
         student.id = int(self.__students[-1]["id"]) + 1
         student.name = f"Estudiante #{student.id}"
         self.__students.append(jsonable_encoder(student))
