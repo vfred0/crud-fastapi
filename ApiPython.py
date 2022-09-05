@@ -9,7 +9,6 @@ from controllers.StudentController import StudentController
 # from routers import developers, users
 
 app = FastAPI()
-
 # origins = [
 #     '*'
 #     "http://localhost:3000",
