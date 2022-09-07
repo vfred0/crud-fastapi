@@ -14,7 +14,7 @@ class StudentRepository:
     def save(self, student):
         print(f"DEBUG: {self.__students[-1]}")
         student.id = int(self.__students[-1]["id"]) + 1
-        student.name = f"Estudiante #{student.id}"
+        student.name = f"{student.name} #{student.id}"
         self.__students.append(jsonable_encoder(student))
         self.__update_students()
 
@@ -24,21 +24,22 @@ class StudentRepository:
     def update(self, student):
         updateStudent: Student = list(
             filter(
-                lambda searchStudent: searchStudent.id == student.id, self.__students
+                lambda searchStudent: searchStudent["id"] == student.id, self.__students
             )
-        )[0]
-
-        self.__students[self.__students.index(updateStudent)] = student
+        )[0]        
+        self.__students[self.__students.index(updateStudent)]["id"] = student.id
+        self.__students[self.__students.index(updateStudent)]["name"] = student.name
+        self.__students[self.__students.index(updateStudent)]["age"] = student.age
 
         self.__update_students()
 
     def delete(self, id):
         deleteStudent: Student = list(
-            filter(lambda searchStudent: searchStudent.id == id, self.__students)
+            filter(lambda searchStudent: searchStudent['id'] == id, self.__students)
         )[0]
 
         self.__students.remove(deleteStudent)
-        self.__update_students()        
+        self.__update_students()
 
     def __update_students(self):
         with open(self.__URL_DB, "w") as f:
