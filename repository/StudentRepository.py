@@ -1,46 +1,33 @@
-import json
 from typing import List
+
 from fastapi.encoders import jsonable_encoder
 
 from models.Student import Student
+from repository.DatabaseRepository import DatabaseRepository
+
+# from sqlalchemy.sql import text
 
 
-class StudentRepository:
+class StudentRepository(DatabaseRepository):
     def __init__(self) -> None:
-        self.__URL_DB = "repository/db.json"
-        with open(self.__URL_DB, "r") as f:
-            self.__students: List[Student] = json.load(f)
+        super().__init__()
 
-    def save(self, student):
-        print(f"DEBUG: {self.__students[-1]}")
-        student.id = int(self.__students[-1]["id"]) + 1
-        student.name = f"{student.name} #{student.id}"
-        self.__students.append(jsonable_encoder(student))
-        self.__update_students()
+    def save(self, student: Student):
+        self._db.add(student)
+        self._db.commit()
 
     def get_students(self) -> List[Student]:
-        return self.__students
+        return self._db.query(Student).all()
 
     def update(self, student):
-        updateStudent: Student = list(
-            filter(
-                lambda searchStudent: searchStudent["id"] == student.id, self.__students
-            )
-        )[0]        
-        self.__students[self.__students.index(updateStudent)]["id"] = student.id
-        self.__students[self.__students.index(updateStudent)]["name"] = student.name
-        self.__students[self.__students.index(updateStudent)]["age"] = student.age
+        self._db.query(Student).filter(Student.id == student.id).update(
+            jsonable_encoder(student)
+        )
+        self._db.commit()
 
-        self.__update_students()
+    def delete(self, id: int):
+        self._db.query(Student).filter(Student.id == id).delete()
+        self._db.commit()
 
-    def delete(self, id):
-        deleteStudent: Student = list(
-            filter(lambda searchStudent: searchStudent['id'] == id, self.__students)
-        )[0]
-
-        self.__students.remove(deleteStudent)
-        self.__update_students()
-
-    def __update_students(self):
-        with open(self.__URL_DB, "w") as f:
-            json.dump(self.__students, f)
+    def get_students_by_skill(self, skill: str) -> List[Student]:
+        return self._db.query(Student).filter(Student.skills.contains(skill)).all()
